@@ -1,5 +1,7 @@
 <?php
 include('db.php');
+$sql = "select * from restaurant";
+$result = mysqli_query($db, $sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -235,8 +237,12 @@ include('db.php');
 
 
     <main class="main">
+
+
+
         <div>
             <p class="restaurant_name">I-House 학생식당</p>
+            <a href="restaurant_detail.php?restaurant_name=I-House 학생식당">
             <div class="restaurant">
                 <div class="imgBox">
                     <img class="img" src="https://monthly.chosun.com/upload/0812/0812_302.jpg" alt="">
@@ -245,8 +251,9 @@ include('db.php');
                     잡곡밥, 팽이버섯유부국, 매콤오징어떡볶음, 알감자조림, 삼색숙주나물, 깍두기, 숭늉
                 </div>
             </div>
-           
+            </a>
         </div>
+
         <div>
             <p class="restaurant_name">진·선·미관 식당</p>
             <div class="restaurant">

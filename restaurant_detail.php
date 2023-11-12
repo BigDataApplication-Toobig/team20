@@ -1,3 +1,11 @@
+<?php
+include('db.php');
+
+if(isset($_GET['restaurant_name'])){
+    $restaurant_name = mysqli_real_escape_string($db, $_GET['restaurant_name']);
+    echo $restaurant_name;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
