@@ -237,83 +237,18 @@ $result = mysqli_query($db, $sql);
 
 
     <main class="main">
-
-
-
+    <?php foreach($result as $row){ ?>
         <div>
-            <p class="restaurant_name">I-House 학생식당</p>
-            <a href="restaurant_detail.php?restaurant_name=I-House 학생식당">
+            <p class="restaurant_name"><?= $row['restaurant_name']  ?></p>
+            <a href="restaurant_detail.php?restaurant_name=<?= $row['restaurant_name']?>">
             <div class="restaurant">
                 <div class="imgBox">
                     <img class="img" src="https://monthly.chosun.com/upload/0812/0812_302.jpg" alt="">
                 </div>
-                <div class="food_menu">
-                    잡곡밥, 팽이버섯유부국, 매콤오징어떡볶음, 알감자조림, 삼색숙주나물, 깍두기, 숭늉
-                </div>
             </div>
             </a>
         </div>
-
-        <div>
-            <p class="restaurant_name">진·선·미관 식당</p>
-            <div class="restaurant">
-                <div class="imgBox">
-                    <img class="img" src="https://i.namu.wiki/i/RX9Tq9s8drjMtXyIqbkeAQINv7ZSQkwNqzROKRq-tezwvNjoGpNUJ27UFasxxYOJATmtUJXkoNIR_OHbtED5oA.webp" alt="">
-                </div>
-                <div class="food_menu">
-                    나가사끼 짬뽕탕, 꿔바로우/청양유자마요소스, 고구마 조림, 미역초무침, 쌀밥, 배추김치 
-                </div>
-            </div>
-            
-        </div>
-        <div>
-            <p class="restaurant_name">헬렌관 식당</p>
-            <div class="restaurant">
-                <div class="imgBox">
-                    <img class="img" src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FcwQdnc%2Fbtsz20sgWQ0%2F24K7kUNZkAxKKmxPqmj0F1%2Fimg.jpg" alt="">
-                </div>
-                <div class="food_menu">
-                    우유달걀카레, 미니돈까스/칠리소스, 콜리플라워 두부무침, 마카로니마요무침, 유부 된장국, 배추김치
-                </div>
-            </div>
-           
-        </div>
-        <div>
-            <p class="restaurant_name">E-House 식당(201동)</p>
-            <div class="restaurant">
-                <div class="imgBox">
-                    <img class="img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpGfH5Usnai95GjvULuSCywBu8c3mjuXkwdBcU3Z47er9b0Jphh93m9ktsWTfWkpwh8IQ&usqp=CAU" alt="">
-                </div>
-                <div class="food_menu">
-                    야채듬뿍 비빔당면, 콩나물 돼지불고기, 순대/양념소금, 후리가케 주먹밥, 단무지
-                </div>
-            </div>
-           
-       </div>
-        <div>
-            <p class="restaurant_name">공대식당</p>
-            <div class="restaurant">
-                <div class="imgBox">
-                    <img class="img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQ7vBU43Kg_5TduAn7T-2wEMXQA_DnhVOXHA&usqp=CAU" alt="">
-                </div>
-                <div class="food_menu">
-                    잡곡밥, 콩비지찌개, 너비아니구이, 열무나물무침, 멸치볶음, 깍두기, 숭늉
-                </div>
-            </div>
-           
-        </div>
-        <div>
-            <p class="restaurant_name">한우리집 식당</p>
-            <div class="restaurant">
-                <div class="imgBox">
-                    <img class="img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTf3R6bK8e1Io_oUvF3p51r3f-nHUU7dcQEAw&usqp=CAU" alt="">
-                </div>
-                <div class="food_menu">
-                    잡곡밥, 콩비지찌개, 너비아니구이, 열무나물무침, 멸치볶음, 깍두기, 숭늉
-                </div>
-            </div>
-           
-        </div>
+    <?php } ?>
      
     </main>
 
