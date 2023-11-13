@@ -121,7 +121,7 @@ $result = mysqli_query($db, $sql);
         }
         .imgBox{
             width: 100%;
-            height:60%;
+            height:100%;
         }
         .img{
             width: 100%;
@@ -226,11 +226,23 @@ $result = mysqli_query($db, $sql);
     <section>  
         <div class="main_inner">
             <div>
-                <input class="input_time" type="time"> &nbsp; 시간에 &nbsp; <input class="btn" type="submit" value="주문 가능한 음식 확인하기">
-            </div>    
+            <form method="post" action="./search_result_time.php">
+                <?php if(isset($_GET['time_error'])) { ?>
+                    <p class="error"><?php echo $_GET['time_error']; ?></p>
+                <?php } ?>
+                <input class="input_time" name="input_date" type="date"> &nbsp; 일 &nbsp;
+                <input class="input_time" name="input_time" type="time"> &nbsp; 시에 &nbsp; 
+                <input class="btn" type="submit" value="주문 가능한 음식 확인하기">
+            </form>
+            </div>   
             <div>
-                <input class="input_txt" type="text" value="식당, 메뉴 검색하기">
+            <form method="post" action="./search_result_food.php">
+                <?php if(isset($_GET['text_error'])) { ?>
+                    <p class="error"><?php echo $_GET['text_error']; ?></p>
+                <?php } ?>
+                <input class="input_txt" name="input_text" type="text" placeholder="식당, 메뉴 검색하기">
                 <button class="btn">검색</button>
+            </form>
             </div>
         </div>
     </section>
@@ -240,10 +252,16 @@ $result = mysqli_query($db, $sql);
     <?php foreach($result as $row){ ?>
         <div>
             <p class="restaurant_name"><?= $row['restaurant_name']  ?></p>
-            <a href="restaurant_detail.php?restaurant_name=<?= $row['restaurant_name']?>">
+            <a href="restaurant_detail.php?restaurant_id=<?= $row['restaurant_id']?>">
             <div class="restaurant">
                 <div class="imgBox">
-                    <img class="img" src="https://monthly.chosun.com/upload/0812/0812_302.jpg" alt="">
+                <?php 
+                $restaurant_id = $row['restaurant_id'];
+                $img_sql = "select * from restaurant_images where restaurant_id = $restaurant_id limit 1";
+                $img_result = mysqli_query($db, $img_sql);
+                $img_row = mysqli_fetch_assoc($img_result);
+                ?>
+                <img class="img" src="<?=$img_row['image_url']?>" alt="">
                 </div>
             </div>
             </a>
@@ -257,14 +275,14 @@ $result = mysqli_query($db, $sql);
         <div class="inner">
             <div>
                 <h1>EwhaFOOD</h1>
-                <p>이화여자대학교 학생들을 위한 학식 배달 서비스</p>
+                <p>이화여자대학교 학생들을 위한 학식 예약주문 서비스</p>
                 <ul class="menu">
                     <li><a href="#">이용약관</a></li>
                     <li><a href="#">개인정보처리방침</a></li>
                 </ul>
                 <ul class="name">
                     <li>대표 : TwoBig</li>
-                    <li>이메일 : hyeri1126@ewhain.net</li>
+                    
                 </ul>
             </div>
             <divv class="footer_right">

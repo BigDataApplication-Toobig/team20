@@ -1,14 +1,23 @@
 <?php
 include('db.php');
 
-if(isset($_GET['restaurant_id'])){
-    $restaurant_id = mysqli_real_escape_string($db, $_GET['restaurant_id']);
-    echo $restaurant_id;
-    $sql = "select * from review where restaurant_id=$restaurant_id";
-    $result = mysqli_query($db, $sql);
+if(isset($_POST['input_time']) && isset($_POST['input_date'])){
+    $input_date = mysqli_real_escape_string($db, $_POST['input_date']);
+    $input_time = mysqli_real_escape_string($db, $_POST['input_time']);
     
+    if(empty($input_date)){
+        header("location: main.php?time_error=날짜를 입력해주세요.");
+        exit();
+    }else if(empty($input_time)){
+        header("location: main.php?time_error=시간을 입력해주세요.");
+        exit();
+    }else{
+        $input_time = date('H:i', strtotime($_POST['input_time']));
+        $input_date = date('Y-m-d', strtotime($_POST['input_date']));
+    }
 }else{
-    echo "error";
+    header("location: main.php?time_error=알 수 없는 오류가 발생했습니다.");
+    exit();
 }
 ?>
 
@@ -18,8 +27,7 @@ if(isset($_GET['restaurant_id'])){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <!-- 스타일 초기화 -->
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css" />
      <!-- google fonts -->
      <link rel="preconnect" href="https://fonts.googleapis.com">
      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +36,7 @@ if(isset($_GET['restaurant_id'])){
      <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
      <link href="htt ps://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
      <style>
-        body{
+          body{
             font-family: 'IBM Plex Sans KR', sans-serif;
             box-sizing: border-box;
         }
@@ -90,101 +98,36 @@ if(isset($_GET['restaurant_id'])){
             font-size: 25px;
             column-gap: 50px;
         }
-       
-        .main_container{
+        
+        .result_container{
             width: 100%;
-            padding: 60px 0;
         }
-        .main_inner{
+        .result_inner{
             width: 1400px;
             margin: 0 auto;
+        }
+        .title{
+            font-weight: 700;
+            font-size: 25px;
+            padding: 50px 0;
+        }
+        .result_list{
             display: flex;
             flex-direction: column;
+            gap: 10px;
+            margin-bottom: 50px;
         }
-        .top{
-            display: flex;
-            box-sizing: border-box;
-            padding: 0 30px;
-            justify-content: space-between;
-            align-items: center;
-            height: 50px;
-            width: 100%;
-            background-color: #555555;
-            color: white;
-        }
-        .top_left{
-            display: flex;
-            gap: 20px;
-        }
-        .selection{
-            padding: 5px 10px;
-        }
-        .review_container{
-            box-sizing: border-box;
+        .result{
             width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-        }
-        .review{
-            box-sizing: border-box;
-            width: 100%;
-            padding: 20px 20px;
+            gap: 10px;
             border: 1px solid rgb(128, 128, 128,0.3);
-        }
-        .user{
-            /* width: 100%; */
             padding: 10px;
-            display: flex;
         }
-        .user_img{
-            width: 60px;
-            height: 60px;
-            position: relative;
-            border-radius: 30px;
-            overflow: hidden;
-            margin-right: 10px;
-        }
-        .img{
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        .user_info{
-            display: flex;
-            flex-direction: column;
-            gap: 3px;
-        }
-        .food_urls{
-            padding: 5px;
-            display: flex;
-            gap:5px;
-            align-items: center;
-        }
-        .food_imgBox{
-            width: 180px;
-            height: 140px;
-            position: relative;
-        }
-        .food_imgUrl{
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            position: absolute;
-        }
-        .content{
-            margin-top: 20px;
-            border: 1px solid rgb(128, 128, 128,0.3);
-            padding: 15px 10px;
-            border-radius: 5px;
-        }
-        
 
-         /* FOOTER */
-         .footer {
+        /* FOOTER */
+        .footer {
             width: 100%;
             height: 200px;
             border-top: 1px solid #ccc;
@@ -244,8 +187,8 @@ if(isset($_GET['restaurant_id'])){
             width: 100%;
             height: 100%;
         }
-
      </style>
+</head>
 <body>
      <!-- HEADER -->
     <header>
@@ -271,78 +214,83 @@ if(isset($_GET['restaurant_id'])){
         <p></p>
     </header>
 
-    <main class="main_container">
-        <div class="main_inner">
-            <div class="top">
-                <div class="top_left">
-                    <button>베스트순</button>
-                    <button>최신순</button>
-                </div>
-                <div>
-                    <select class="selection">
-                        <option value="all">모든 별점 보기</option>
-                        <option value="5">⭐⭐⭐⭐⭐</option>
-                        <option value="4">⭐⭐⭐⭐</option>
-                        <option value="3">⭐⭐⭐</option>
-                        <option value="2">⭐⭐</option>
-                        <option value="1">⭐</option>
-                    </select>
-                </div>
-            </div>
-            <!-- jsp 처리할거 아니면 submit 버튼 필요함
-            1. jsp 처리해서 form 자동전송되도록 하거나
-            2. submit 만들어서 form 전송 (이 경우 베스트/최신순 선택된 표시 나타나도록 해야 함. 또한 베스트/최신순 선택시 별점은 모든 별점보기로 자동 설정되도록 함.)
-            -->
-           
-            <div class="review_container">
-                <?php while($row = mysqli_fetch_assoc($result)){ ?>
-                    <div class="review">
-                        <div class="user">
-                            <div class="user_img">
-                                <img class="img" src="https://png.pngtree.com/png-vector/20191115/ourmid/pngtree-beautiful-profile-line-vector-icon-png-image_1990469.jpg" alt="">
-                            </div>
-                            <div class="user_info">
-                                <p><?=$row['user_id']?></p>
-                                <!-- 별점 float -> 별점이미지로 변환해 나타내도록 처리 -->
-                                <p><?=$row['ratings']?></p>
-                                <p><?=$row['created_dt']?></p>
-                            </div>
-                        </div>
-                        <div class="food_urls">
-                            <div class="food_imgBox">
-                                <img class="food_imgUrl" src=<?=$row['image_url']?> alt="">
-                            </div>
-                        </div>
-                        <div class="content"><?=$row['content']?></div>
-                    </div>
+    <main class="result_container">
+        <div class="result_inner">
+            <h1 class="title"><?=$input_date?> <?=$input_time?>에 주문가능한 메뉴는 다음과 같습니다.</h1>
+            <div class="result_list">
+                <?php 
+                $menu_sql = "select * from meal where date='".$input_date."'";
+                $menu_result = mysqli_query($db, $menu_sql);
+                ?>
+                <?php while($forrow = mysqli_fetch_assoc($menu_result)){ ?>
+                    
+                    <?php
+                    $meal_id = $forrow['meal_id'];
+                    // 해당식사 날짜+시작시간, 날짜+종료시간, 사용자 입력 날짜+시간 변수 생성
+                    $time_sql = "select start_time, end_time from restaurant_timeInfo where serving_time = (select serving_time from meal where meal_id=$meal_id) and restaurant_id = (select restaurant_id from meal where meal_id=$meal_id)";
+                    $time_result = mysqli_query($db, $time_sql);
+                    $time_row = mysqli_fetch_assoc($time_result);
+                    $start_time = strtotime($input_date." ".$time_row['start_time']);
+                    $end_time = strtotime($input_date." ".$time_row['end_time']);
+                    $current_time = strtotime($input_date." ".$input_time);
+                    //echo print_r($forrow), $start_time, $end_time, "<br>";
+                    ?>
 
+                    <!-- 사용자 입력 날짜+시간이 해당식사 시간범위 내일 경우 출력-->
+                    <?php if (($current_time >= $start_time) && ($current_time <= $end_time)){ ?>
+                        <div class="result">
+                        <?php
+                        $sql = "select * from meal where meal_id=$meal_id";
+                        $result = mysqli_query($db, $sql);
+                        $row = mysqli_fetch_assoc($result);
+
+                        $restaurant_id = $row['restaurant_id'];
+                        $resname_sql = "select `restaurant_name` from `restaurant` where `restaurant_id`=$restaurant_id";
+                        $resname_result = mysqli_query($db, $resname_sql);
+                        $restaurant_name = mysqli_fetch_assoc($resname_result)['restaurant_name'];
+                        $meal_menu = str_replace(',', ', ', $row['meal_menu']);
+                                
+                        ?>
+                        <p><?=$restaurant_name?></p>
+                        <p><?=$row['date']?> <?=$row['serving_time']?></p>
+                        <p><?=$meal_menu?></p>
+                        </div>
+
+                    <?php }else{ ?>
+
+                    <?php } ?>
+
+                
                 <?php } ?>
+                
+                
             </div>
         </div>
     </main>
 
-   <!-- FOOTER -->
-   <section class="footer">
-    <div class="inner">
-        <div>
-            <h1>EwhaFOOD</h1>
-            <p>이화여자대학교 학생들을 위한 학식 예약주문 서비스</p>
-            <ul class="menu">
-                <li><a href="#">이용약관</a></li>
-                <li><a href="#">개인정보처리방침</a></li>
-            </ul>
-            <ul class="name">
-                <li>대표 : TwoBig</li>
-                
-            </ul>
-        </div>
-        <div class="footer_right">
-            <div class="footer_imgBox">
-                <img class="footer_img" src="https://blog.kakaocdn.net/dn/cd1bfq/btsz51di36E/8L5wfoO4rRvP0zIx70nzC0/img.png" alt="">
+    <!-- FOOTER -->
+    <section class="footer">
+        <div class="inner">
+            <div>
+                <h1>EwhaFOOD</h1>
+                <p>이화여자대학교 학생들을 위한 학식 예약주문 서비스</p>
+                <ul class="menu">
+                    <li><a href="#">이용약관</a></li>
+                    <li><a href="#">개인정보처리방침</a></li>
+                </ul>
+                <ul class="name">
+                    <li>대표 : TwoBig</li>
+                    
+                </ul>
+            </div>
+            <div class="footer_right">
+                <div class="footer_imgBox">
+                    <img class="footer_img" src="https://blog.kakaocdn.net/dn/cd1bfq/btsz51di36E/8L5wfoO4rRvP0zIx70nzC0/img.png" alt="">
+                </div>
             </div>
         </div>
-    </div>
-</section>
-    
+    </section>
+
+
 </body>
 </html>

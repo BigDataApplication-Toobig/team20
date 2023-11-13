@@ -1,9 +1,19 @@
 <?php
 include('db.php');
 
-if(isset($_GET['restaurant_name'])){
-    $restaurant_name = mysqli_real_escape_string($db, $_GET['restaurant_name']);
-    echo $restaurant_name;
+if(isset($_GET['restaurant_id'])){
+    $restaurant_id = mysqli_real_escape_string($db, $_GET['restaurant_id']);
+    $sql = "select * from restaurant where restaurant_id=$restaurant_id";
+    $result = mysqli_query($db, $sql);
+    $row = mysqli_fetch_assoc($result);
+    
+    $restaurant_name = $row['restaurant_name'];
+    $call_number = $row['call_number'];
+    $location = $row['location'];
+    $introduction = $row['introduction'];
+    $available_time = $row['available_time'];
+}else{
+    echo "error";
 }
 ?>
 <!DOCTYPE html>
@@ -274,8 +284,8 @@ if(isset($_GET['restaurant_name'])){
       
 </style>
 <body>
-     <!-- HEADER -->
-     <header>
+    <!-- HEADER -->
+    <header>
         <div class="header_inner">
             <!-- LOGO -->
             <a href="main.php">
@@ -285,94 +295,102 @@ if(isset($_GET['restaurant_name'])){
             </a>
              <!-- MENU -->
              <div class="menu">
-                 <div ><a href="login.php">login</a></div>
-                 <div > <a href="signup.php">sign up</a></div>
+                <!-- 세션 사용 -->
+                <?php if(isset($_SESSION['user_id'])){ ?>
+                    <div><a href="mypage.php">My page</a></div>
+                    <div><a class="lin" href="logout.php">Log out</a></div>
+                <?php } else{ ?>
+                    <div><a href="login_view.php">login</a></div>
+                    <div><a class="lin" href="signup_view.php">sign up</a></div>
+                <?php } ?>
              </div>
         </div>
+        <p></p>
     </header>
 
     <main class="main_container">
         <div class="main_container_inner">
-            <h1 class="main_title">I-House 학생식당</h1>
+            <h1 class="main_title"><?=$restaurant_name?></h1>
+            <!-- 리뷰확인 안보임! 보이게 처리해야 함 -->
+            <a href="review_list.php?restaurant_id=<?=$restaurant_id?>">리뷰 확인</a>
             <div class="main_desc">
                 <div class="desc_left">
                     <div class="imgBox">
-                        <img class="img" src="http://www.ewha.ac.kr/app/board/attach/image/328586-1679293142000.do" alt="">
+                    <?php 
+                    
+                    $img_sql = "select * from restaurant_images where restaurant_id = $restaurant_id limit 1";
+                    $img_result = mysqli_query($db, $img_sql);
+                    $img_row = mysqli_fetch_assoc($img_result);
+                    ?>
+                    <img class="img" src="<?=$img_row['image_url']?>" alt="">
                     </div>
               
                 </div>
                 <div class="desc_right">
-                    <h1 class="desc_title">대학원 기숙사 A/B동 I-House C동 B1층</h1>
-                    <p style="line-height: 1.2;">I-House 학생식당은 생활환경관 및 SK텔레콤관 근처에 위치하고 있어 국제교육관, 신세계관, 생활환경관, 학생문화관 그리고 ECC 등에서 이용하기 편리합니다. 물론 아이하우스에 거주하는 외국인학생들과 대학원생들도 이용 가능합니다.
-
-                        학교의 대표적인 학생식당으로 자리매김할 I-House 학생식당은 자율배식형 정식(한식)과 돈까스 및 스파게티와 같은 양식, 그리고 명동칼국수와 제육덮밥 등을 판매합니다. 매장 안에 카패도 있어 다양한 종류의 음료와 베이커리를 즐기실 수 있습니다.
-                    </p>
-                    <p class="desc">02-313-7071</p>
-                    <p class="desc">11시~18시 30분
-                        (쉬는시간 15시~16시, 까페는 이용가능)</p>
+                    <h1 class="desc_title"><?=$location?></h1>
+                    <p style="line-height: 1.2;"><?=$introduction?></p>
+                    <p class="desc"><?=$call_number?></p>
+                    <p class="desc"><?=nl2br($available_time)?></p>
 
                 </div>
             </div>
+            <!-- 운영 요일과 횟수 가져오기 ex)월화수목금 / 조중중석 -> 4X5
+            for 중첩-->
+            <?php
+            $weekday_sql = "select DISTINCT weekday from meal where restaurant_id = $restaurant_id";
+            $weekday_result = mysqli_query($db, $weekday_sql);
+
+            $serving_time_sql = "select DISTINCT serving_time from meal where restaurant_id = $restaurant_id";
+            $serving_time_result = mysqli_query($db, $serving_time_sql);
+            ?>
             <div class="table_container">
                 <table>
                     <tr>
-                        <th scope="col">월</th>
-                        <th scope="col">화</th>
-                        <th scope="col">수</th>
-                        <th scope="col">목</th>
-                        <th scope="col">금</th>
+                    <?php while ($row = mysqli_fetch_assoc($weekday_result)){ ?>
+                        <?php 
+                        $weekday = $row['weekday'];
+                        $date_sql = "select date from meal where weekday ='".$weekday."'"; 
+                        $date_result = mysqli_query($db, $date_sql);
+                        $date = mysqli_fetch_assoc($date_result)['date'];
+                        ?>
+
+                        <th scope="col"><?=$date?>(<?=$weekday?>)</th>
+                    <?php } ?>
                     </tr>
-                    <tr>
-                        <td>
-                            -조식- <br> *천원의 아침밥* <br> -선착순 150명- <br><br> 흑미밥<br>계란만둣국<br>쏘시지야채볶음<br>깍두기<br>반찬2종<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -조식- <br> *천원의 아침밥* <br> -선착순 150명- <br><br> 흑미밥<br>계란만둣국<br>쏘시지야채볶음<br>깍두기<br>반찬2종<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -조식- <br> *천원의 아침밥* <br> -선착순 150명- <br><br> 흑미밥<br>계란만둣국<br>쏘시지야채볶음<br>깍두기<br>반찬2종<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -조식- <br> *천원의 아침밥* <br> -선착순 150명- <br><br> 흑미밥<br>계란만둣국<br>쏘시지야채볶음<br>깍두기<br>반찬2종<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -조식- <br> *천원의 아침밥* <br> -선착순 150명- <br><br> 흑미밥<br>계란만둣국<br>쏘시지야채볶음<br>깍두기<br>반찬2종<br>야채샐러드<br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            -중식- <br> 흑미밥<br>계란만둣국<br>배추김치<br>해물떡볶이<br>궁중식잡채<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -중식- <br> 흑미밥<br>계란만둣국<br>배추김치<br>해물떡볶이<br>궁중식잡채<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -중식- <br> 흑미밥<br>계란만둣국<br>배추김치<br>해물떡볶이<br>궁중식잡채<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -중식- <br> 흑미밥<br>계란만둣국<br>배추김치<br>해물떡볶이<br>궁중식잡채<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -중식- <br> 흑미밥<br>계란만둣국<br>배추김치<br>해물떡볶이<br>궁중식잡채<br>야채샐러드<br>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            -중식- <br> 흑미밥<br>계란만둣국<br>배추김치<br>해물떡볶이<br>궁중식잡채<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -중식- <br> 흑미밥<br>계란만둣국<br>배추김치<br>해물떡볶이<br>궁중식잡채<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -중식- <br> 흑미밥<br>계란만둣국<br>배추김치<br>해물떡볶이<br>궁중식잡채<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -중식- <br> 흑미밥<br>계란만둣국<br>배추김치<br>해물떡볶이<br>궁중식잡채<br>야채샐러드<br>
-                        </td>
-                        <td>
-                            -중식- <br> 흑미밥<br>계란만둣국<br>배추김치<br>해물떡볶이<br>궁중식잡채<br>야채샐러드<br>
-                        </td>
-                    </tr>
+                    <?php foreach($serving_time_result as $serving_time_row){ ?>
+                        <tr>
+                        <?php foreach($weekday_result as $weekday_row){ ?>
+                            <td>
+                            <?php $weekday = $weekday_row['weekday'];
+                            $serving_time = $serving_time_row['serving_time'];
+                            $meal_sql = "select * from meal where restaurant_id=$restaurant_id and weekday='".$weekday."' and serving_time='".$serving_time."'";
+                            
+                            $meal_result = mysqli_query($db, $meal_sql);
+                            $row = mysqli_fetch_assoc($meal_result);
+                            ?>
+                            <?php if($row){ ?>
+                                <?php 
+                                $meal_menu = str_replace(',', '<br>', $row['meal_menu']); 
+
+                                $time_sql = "select start_time, end_time from restaurant_timeinfo where restaurant_id=$restaurant_id and serving_time='".$serving_time."'";
+                                $time_result = mysqli_query($db, $time_sql);
+                                $time_row = mysqli_fetch_assoc($time_result);
+                                $start_time = $time_row['start_time'];
+                                $end_time = $time_row['end_time'];
+                                ?>
+                                <br>-<?=$row['serving_time']?>-<br><?=$start_time?>~<?=$end_time?><br><br><?=$meal_menu?><br>
+                            <?php }else{ ?>
+                                <?php $meal_menu = '휴무'; ?>
+                                <br><?=$meal_menu?><br>
+                            <?php } ?>
+                            
+                            
+                            
+                            
+                            </td>
+                        <?php } ?>
+                        </tr>
+                    <?php } ?>
                 </table>
                 <div class="order">
                     <form class="order_form" action="POST">
@@ -390,7 +408,7 @@ if(isset($_GET['restaurant_name'])){
                         </div>
                         <div class="receive_time">
                             <p class="form_question mb">음식을 받을 시간을 선택해주세요.</p>
-                            <input class="input_time" type="time">
+                            <input class="input_time" type="time" min="00:00:00" max="01:30:00">
                         </div>
                         <input class="btn btn_plus" type="submit" value="주문하기">
                     </form>
@@ -405,14 +423,14 @@ if(isset($_GET['restaurant_name'])){
         <div class="inner">
             <div>
                 <h1>EwhaFOOD</h1>
-                <p>이화여자대학교 학생들을 위한 학식 배달 서비스</p>
+                <p>이화여자대학교 학생들을 위한 학식 예약주문 서비스</p>
                 <ul class="menu">
                     <li><a href="#">이용약관</a></li>
                     <li><a href="#">개인정보처리방침</a></li>
                 </ul>
                 <ul class="name">
                     <li>대표 : TwoBig</li>
-                    <li>이메일 : hyeri1126@ewhain.net</li>
+                    
                 </ul>
             </div>
             <div class="footer_right">

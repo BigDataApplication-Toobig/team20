@@ -272,14 +272,14 @@
         <div class="inner">
             <div>
                 <h1>EwhaFOOD</h1>
-                <p>이화여자대학교 학생들을 위한 학식 배달 서비스</p>
+                <p>이화여자대학교 학생들을 위한 학식 예약주문 서비스</p>
                 <ul class="menu">
                     <li><a href="#">이용약관</a></li>
                     <li><a href="#">개인정보처리방침</a></li>
                 </ul>
                 <ul class="name">
                     <li>대표 : TwoBig</li>
-                    <li>이메일 : hyeri1126@ewhain.net</li>
+                    
                 </ul>
             </div>
             <divv class="footer_right">
