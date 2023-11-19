@@ -12,33 +12,37 @@
 리뷰페이지: 리뷰나열 전에 <총 n개의 리뷰가 조회되었습니다.> 추가
 
 <백엔드 todo>
-데베 script: 인덱스추가 및 활용
-프론트에서 완료 후 가능: 식당페이지 주문서 폼 작성 처리
-프론트에서 완료 후 가능: 식당페이지 식당 평점 추가
-프론트에서 완료 후 가능: 리뷰페이지 php 작성, form 작성 맞춰서 리뷰 나열되어 조회되도록, 조회된 리뷰 개수 확인할 수 있도록 적용
-프론트에서 완료 후 가능: 마이페이지 주문내역에 리뷰작성 부분 추가
-프론트에서 완료 후 가능: 찜 추가 삭제 php 작성, 마이페이지/식당페이지와 연결
+식당페이지 주문서 폼 작성 처리 ->완
+식당페이지 식당 평점 추가 ->리뷰페이지에서 추가예정
+리뷰페이지 php 작성, form 작성 맞춰서 리뷰 나열되어 조회되도록, 조회된 리뷰 개수 확인할 수 있도록 적용 ->지금 하는 중
+마이페이지 주문내역에 리뷰작성 부분 추가 ->완, 리뷰 수정삭제 구현완
+찜 추가 삭제 php 작성, 마이페이지/식당페이지와 연결
 주석정리
 
 <req 만족 체크 (기능/만족여부/구현기술)>
-2-1 Theme of the project: O (restaurant)
-2-2-1 database creation script: X index 추가 및 활용
-2-2-2 database insert script: X 데이터 추가해서 다시 생성
-2-2-3 drop table script: O
-2-2-4 dump file: X 위에 다 완료한후 새로운 덤프파일 생성
-2-3 INSERT, DELETE, UPDATE, SELECT related functions X
-2-3-1 insert O (회원가입)
-2-3-2 delete X (리뷰삭제)
-2-3-3 update X (리뷰수정) (db review.modified_date 추가 및 활용)
-2-3-4 select O (메인페이지 식당정보 조회)
-+ take USER INPUT O (메인페이지 메뉴검색)
-2-4 SUM, AVG, etc and GROUP BY X (avg 식당 평점, group by restaurant_id)
-2-5 Some SELECT queries should include SUM, AVG, etc (aggregation operations) and also GROUP BY statements
-2-5-1 providing aggregates (sum, average, max, min, etc.) based on complex groupings (group on several columns) X (미정)
-2-5-2 rollup, drill down on OLAP data X (리뷰 별점 float -> int(N점대) 적용해서 개수 보기)
-2-5-3 ranking, or windowing X (리뷰 별점순)
-2-5-6 User input should include various types of controls O (메인페이지에서 text, datetime 정보 input으로 받음)
-2-5-7 PHP sessions O (로그인 및 마이페이지)
-2-5-8 transaction ? (미정. 여러 개의 query 실행되는 경우 넣으면 된다... 어디가 적절할지 고려해볼 것)
+
+O 2-1 Theme of the project: O (restaurant)
+O 2-2-1 database creation script: O
+X 2-2-2 database insert script: X 데이터 추가해서 다시 생성
+O 2-2-3 drop table script: O
+X 2-2-4 dump file: X 위에 다 완료한후 새로운 덤프파일 생성
+
+O 2-3 INSERT, DELETE, UPDATE, SELECT related functions 
+O 2-3-1 insert O (회원가입)
+O 2-3-2 delete O (리뷰삭제)
+O 2-3-3 update O (리뷰수정) (db review.modified_date 추가 및 활용 (근데 굳이?))
+O 2-3-4 select O (메인페이지 식당정보 조회)
+O + take USER INPUT O (메인페이지 메뉴검색)
+
+X 2-4 SUM, AVG, etc and GROUP BY X (avg 식당 평점 구현완, group by restaurant_id)
+X 2-5 Some SELECT queries should include SUM, AVG, etc (aggregation operations) and also GROUP BY statements
+X 2-5-1 providing aggregates (sum, average, max, min, etc.) based on complex groupings (group on several columns) X (미정)
+X 2-5-2 rollup, drill down on OLAP data X (미정)
+X 2-5-3 ranking, or windowing X (리뷰 별점순)
+
+O 2-5-6 User input should include various types of controls O (메인페이지에서 text, datetime 정보 input으로 받음)
+O 2-5-7 PHP sessions O (로그인 및 마이페이지)
+
+X 2-5-8 transaction X (미정)
 
 +회의할때 req 불만족 구현기술 미정에 대해 내용 정할 것

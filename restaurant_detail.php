@@ -312,7 +312,7 @@ if(isset($_GET['restaurant_id'])){
         <div class="main_container_inner">
             <h1 class="main_title"><?=$restaurant_name?></h1>
             <!-- 리뷰확인 안보임! 보이게 처리해야 함 -->
-            <a href="review_list.php?restaurant_id=<?=$restaurant_id?>">리뷰 확인</a>
+            
             <div class="main_desc">
                 <div class="desc_left">
                     <div class="imgBox">
@@ -327,6 +327,7 @@ if(isset($_GET['restaurant_id'])){
               
                 </div>
                 <div class="desc_right">
+                <a style="color: black;" href="review_list.php?restaurant_id=<?=$restaurant_id?>">리뷰 보러가기 ></a>
                     <h1 class="desc_title"><?=$location?></h1>
                     <p style="line-height: 1.2;"><?=$introduction?></p>
                     <p class="desc"><?=$call_number?></p>
@@ -360,7 +361,6 @@ if(isset($_GET['restaurant_id'])){
                     <?php foreach($serving_time_result as $serving_time_row){ ?>
                         <tr>
                         <?php foreach($weekday_result as $weekday_row){ ?>
-                            <td>
                             <?php $weekday = $weekday_row['weekday'];
                             $serving_time = $serving_time_row['serving_time'];
                             $meal_sql = "select * from meal where restaurant_id=$restaurant_id and weekday='".$weekday."' and serving_time='".$serving_time."'";
@@ -368,6 +368,8 @@ if(isset($_GET['restaurant_id'])){
                             $meal_result = mysqli_query($db, $meal_sql);
                             $row = mysqli_fetch_assoc($meal_result);
                             ?>
+                            <td>
+                            
                             <?php if($row){ ?>
                                 <?php 
                                 $meal_menu = str_replace(',', '<br>', $row['meal_menu']); 
@@ -383,6 +385,8 @@ if(isset($_GET['restaurant_id'])){
                                 <?php $meal_menu = '휴무'; ?>
                                 <br><?=$meal_menu?><br>
                             <?php } ?>
+
+                            <a href="restaurant_detail.php?restaurant_id=<?= $restaurant_id?>&meal_id=<?= $row['meal_id']?>"><button>선택</button></a>
                             
                             
                             
@@ -393,24 +397,57 @@ if(isset($_GET['restaurant_id'])){
                     <?php } ?>
                 </table>
                 <div class="order">
-                    <form class="order_form" action="POST">
+                <?php
+
+                if(isset($_GET['meal_id'])){
+                    $meal_id = mysqli_real_escape_string($db, $_GET['meal_id']);
+                    $sql = "select * from meal where meal_id=$meal_id";
+                    $result = mysqli_query($db, $sql);
+                    $row = mysqli_fetch_assoc($result);
+                    
+                    $meal_menu = $row['meal_menu'];
+                    $price = $row['price'];
+                    $serving_time = $row['serving_time'];
+                    $time_sql = "select start_time, end_time from restaurant_timeinfo where restaurant_id=$restaurant_id and serving_time='".$serving_time."'";
+                    $time_result = mysqli_query($db, $time_sql);
+                    $time_row = mysqli_fetch_assoc($time_result);
+                    $start_time = $time_row['start_time'];
+                    $end_time = $time_row['end_time'];
+                }else{
+                    $meal_id = "메뉴를 선택해주세요";
+                    $meal_menu = "";
+                    $price = "0";
+                    $start_time = "12:00:00";
+                    $end_time = "12:00:00";
+                    
+                }
+                ?>
+                    <form class="order_form" method="post" action="./order_server.php">
                         <h1 class="order_title">주문서</h1>
                         <div>
                             <p class="form_question mb">선택하신 메뉴 :</p>
-                            <div class="selected_menu">흑미밥, 계란만둣국, 배추김치, 해물떡볶이, 궁중식잡채, 야채샐러드</div>
+                            <div class="selected_menu"><?=$meal_menu?></div>
                         </div>
-                        <div class="form_question">총 금액 : 5500원</div>
+                        <div class="form_question">총 금액 : <?=$price?>원</div>
                         <div class="payment_method">
                             <p class="form_question mb">결제수단을 선택해주세요.</p>
-                            <input type="radio" name="chk_payment" value="1">신용/체크카드
-                            <input type="radio" name="chk_payment" value="CSS">계좌이체/무통장입금
-                            <input type="radio" name="chk_payment" value="웹디자인">휴대폰
+                            <input type="radio" name="payment_method" value="신용/체크카드">신용/체크카드
+                            <input type="radio" name="payment_method" value="계좌이체/무통장입금">계좌이체/무통장입금
+                            <input type="radio" name="payment_method" value="휴대폰">휴대폰
                         </div>
                         <div class="receive_time">
                             <p class="form_question mb">음식을 받을 시간을 선택해주세요.</p>
-                            <input class="input_time" type="time" min="00:00:00" max="01:30:00">
+                            <input class="input_time" type="time" min=<?=$start_time?> max=<?=$end_time?>>
                         </div>
+
+                        <input name="restaurant_id" type="hidden" value=<?=$restaurant_id?>>
+                        <input name="meal_id" type="hidden" value=<?=$meal_id?>>
+                        <input name="price" type="hidden" value=<?=$price?>>
+                        
                         <input class="btn btn_plus" type="submit" value="주문하기">
+                        <?php if(isset($_GET['error'])) { ?>
+                            <p class="error"><?php echo $_GET['error']; ?></p>
+                        <?php } ?>
                     </form>
                 </div>
             </div>

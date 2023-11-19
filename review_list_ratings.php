@@ -1,15 +1,28 @@
 <?php
 include('db.php');
 
-if(isset($_GET['restaurant_id'])){
-    $restaurant_id = mysqli_real_escape_string($db, $_GET['restaurant_id']);
+    $restaurant_id = mysqli_real_escape_string($db, $_POST['restaurant_id']);
     
-    $sql = "select * from review where restaurant_id=$restaurant_id";
+    $ratings_range = $_POST['ratings_range'];
+
+    if ($ratings_range == "all"){
+        $sql = "select * from review where restaurant_id=$restaurant_id";
+    }else if($ratings_range == "4~5"){
+        $sql = "SELECT * FROM `review` WHERE `restaurant_id`=$restaurant_id and `ratings`>=4;";
+    }else if($ratings_range == "3~4"){
+        $sql = "SELECT * FROM `review` WHERE `restaurant_id`=$restaurant_id and `ratings`>=3 and `ratings`<=4;";
+    }else if($ratings_range == "2~3"){
+        $sql = "SELECT * FROM `review` WHERE `restaurant_id`=$restaurant_id and `ratings`>=2 and `ratings`<=3;";
+    }else if($ratings_range == "1~2"){
+        $sql = "SELECT * FROM `review` WHERE `restaurant_id`=$restaurant_id and `ratings`>=1 and `ratings`<=2;";
+    }else if($ratings_range == "0~1"){
+        $sql = "SELECT * FROM `review` WHERE `restaurant_id`=$restaurant_id and `ratings`<=1;";
+    }else{
+        echo "error";
+    }
     $result = mysqli_query($db, $sql);
     $total_count = mysqli_num_rows($result);
-}else{
-    echo "error";
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -274,24 +287,6 @@ if(isset($_GET['restaurant_id'])){
         <p></p>
     </header>
 
-    <?php
-    $resname_sql = "select * from restaurant where restaurant_id=$restaurant_id";
-    $resname_result = mysqli_query($db, $resname_sql);
-    $resname_row = mysqli_fetch_assoc($resname_result);
-    
-    $restaurant_name = $resname_row['restaurant_name'];
-
-    $avg_sql = "select avg(ratings) as avg from review where restaurant_id=$restaurant_id";
-    $avg_result = mysqli_query($db, $avg_sql);
-    $avg_row = mysqli_fetch_assoc($avg_result);
-
-    $avg_ratings = $avg_row['avg'];
-
-
-    ?>
-
-    <h1 class="title"><?=$restaurant_name?> 평점: <?=$avg_ratings?></h1>
-
     <h1 class="title">총 <?=$total_count?>개의 리뷰가 조회되었습니다.</h1>
     <main class="main_container">
         <div class="main_inner">
@@ -343,7 +338,7 @@ if(isset($_GET['restaurant_id'])){
                             </div>
                             <div class="user_info">
                                 <p>작성자: <?=$row['user_id']?></p>
-                                <!-- 별점 float -> 별점이미지로 변환해 나타내도록 처리 -->
+                                
                                 <p>별점: <?=$row['ratings']?></p>
                                 <p>작성일시: <?=$row['created_dt']?></p>
                             </div>

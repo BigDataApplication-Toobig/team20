@@ -1,15 +1,23 @@
 <?php
 include('db.php');
 
-if(isset($_GET['restaurant_id'])){
-    $restaurant_id = mysqli_real_escape_string($db, $_GET['restaurant_id']);
-    
-    $sql = "select * from review where restaurant_id=$restaurant_id";
+
+    $restaurant_id = mysqli_real_escape_string($db, $_POST['restaurant_id']);
+    echo $restaurant_id;
+    $orderby = $_POST['orderby'];
+
+    if ($orderby == "별점 높은순"){
+        $sql = "select * from review where restaurant_id=$restaurant_id order by ratings desc";
+    }else if($orderby == "별점 낮은순"){
+        $sql = "select * from review where restaurant_id=$restaurant_id order by ratings";
+    }else if($orderby == "최신순"){
+        $sql = "select * from review where restaurant_id=$restaurant_id order by created_dt desc";
+    }else{
+        echo "error";
+    }
     $result = mysqli_query($db, $sql);
     $total_count = mysqli_num_rows($result);
-}else{
-    echo "error";
-}
+
 ?>
 
 <!DOCTYPE html>
@@ -274,24 +282,6 @@ if(isset($_GET['restaurant_id'])){
         <p></p>
     </header>
 
-    <?php
-    $resname_sql = "select * from restaurant where restaurant_id=$restaurant_id";
-    $resname_result = mysqli_query($db, $resname_sql);
-    $resname_row = mysqli_fetch_assoc($resname_result);
-    
-    $restaurant_name = $resname_row['restaurant_name'];
-
-    $avg_sql = "select avg(ratings) as avg from review where restaurant_id=$restaurant_id";
-    $avg_result = mysqli_query($db, $avg_sql);
-    $avg_row = mysqli_fetch_assoc($avg_result);
-
-    $avg_ratings = $avg_row['avg'];
-
-
-    ?>
-
-    <h1 class="title"><?=$restaurant_name?> 평점: <?=$avg_ratings?></h1>
-
     <h1 class="title">총 <?=$total_count?>개의 리뷰가 조회되었습니다.</h1>
     <main class="main_container">
         <div class="main_inner">
@@ -307,23 +297,12 @@ if(isset($_GET['restaurant_id'])){
                 </div>
                 <div>
                     <form method="post" action="review_list_ratings.php">
-                    <!-- 
-                        <select name="ratings_range" class="selection">
-                        <option value="all">모든 별점 보기</option>
-                        <option value="4~5">4~5점</option>
-                        <option value="3~4">3~4점</option>
-                        <option value="2~3">2~3점</option>
-                        <option value="1~2">1~2점</option>
-                        <option value="0~1">0~1점</option>
-                    </select>
-                -->
-                <input type="radio" name="ratings_range" value="all">모든 별점 보기
+                    <input type="radio" name="ratings_range" value="all">모든 별점 보기
                 <input type="radio" name="ratings_range" value="4~5">4~5점
                 <input type="radio" name="ratings_range" value="3~4">3~4점
                 <input type="radio" name="ratings_range" value="2~3">2~3점
                 <input type="radio" name="ratings_range" value="1~2">1~2점
                 <input type="radio" name="ratings_range" value="0~1">0~1점
-
                     <input name="restaurant_id" type="hidden" value=<?=$restaurant_id?>>
                     <input type="submit" value="조회">
                     </form>
@@ -343,7 +322,7 @@ if(isset($_GET['restaurant_id'])){
                             </div>
                             <div class="user_info">
                                 <p>작성자: <?=$row['user_id']?></p>
-                                <!-- 별점 float -> 별점이미지로 변환해 나타내도록 처리 -->
+                                
                                 <p>별점: <?=$row['ratings']?></p>
                                 <p>작성일시: <?=$row['created_dt']?></p>
                             </div>

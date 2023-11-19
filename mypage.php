@@ -79,10 +79,17 @@ include('db.php'); ?>
             font-size: 25px;
             column-gap: 50px;
         }
+        .title{
+            font-weight: 600;
+            font-size: 20px;
+            padding: 20px;
+            margin-left: 280px;
+        }
 
         /* MAIN */
         .main_container{
             width: 100%;
+            
         }
         .main_inner{
             width: 1400px;
@@ -103,6 +110,7 @@ include('db.php'); ?>
             display: flex;
             flex-direction: column;
             align-items: center;
+           
         }
         .main_title{
             padding: 10px;
@@ -116,6 +124,51 @@ include('db.php'); ?>
             padding: 30px 20px;
             border: 1px solid rgb(128, 128, 128,0.3);
         } */
+
+        .reveiw_btn{
+            padding: 7px;
+            background-color: rgb(128, 128, 128,0.7);
+            color: white;
+            border: none;
+            border-radius: 3px;
+        }
+        .reveiw_btn:hover{
+            background-color: rgb(128, 128, 128,0.3);
+
+        }
+        #writeorm {
+        display: none;
+        }
+        .reviewForm{
+            border: 1px solid rgb(128, 128, 128,0.3);
+            padding: 10px; 
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .textarea{
+            width: 100%;
+        }
+        .flex{
+            display: flex;
+
+        }
+        #reviewForm{
+            display:none;
+        }
+        .view_review{
+            border: 1px solid rgb(128, 128, 128,0.3);
+            padding: 10px; 
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .reviewBox{
+            padding: 10px;
+            border: 1px solid rgb(128, 128, 128,0.3);
+            margin-top: 10px;
+        }
+
     
         .content{
             margin-top: 20px;
@@ -167,15 +220,18 @@ include('db.php'); ?>
             box-sizing: border-box;
             padding: 0 20px;
         }
-        .food_menu{
+        .liked_list{
             width: 100%;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            align-items: center;
             gap: 10px;
             border: 1px solid rgb(128, 128, 128,0.3);
             font-size: 16px;
             box-sizing: border-box;
             padding: 20px;
+            position: relative;
         }
 
           /* FOOTER */
@@ -239,6 +295,19 @@ include('db.php'); ?>
             width: 100%;
             height: 100%;
         }
+        .heartButton {
+            font-size: 24px; /* 조절 가능한 폰트 크기 */
+            color: gray;
+            cursor: pointer;
+            position: absolute;
+            border: none;
+            top: 0;
+            left: 0;
+            background-color: white;
+        }
+        .heartButton.active{
+            color: red;
+        }
        
 
     </style>
@@ -269,7 +338,8 @@ include('db.php'); ?>
     </header>
 
     <?php $user_id = $_SESSION['user_id']; ?>
-    안녕하세요, <?=$user_id?> 님!
+    <p class="title">안녕하세요, <?=$user_id?> 님!</p>
+    
 
     <main class="main_container">
         <div class="main_inner">
@@ -277,6 +347,8 @@ include('db.php'); ?>
             <div class="main_left">
                 <h1 class="main_title">결제내역(주문목록)</h1>
                 <div class="payment_list">
+                    
+
                     <?php
                     
                     $order_sql = "SELECT * FROM `order` where `user_id`=$user_id;";
@@ -284,32 +356,111 @@ include('db.php'); ?>
                     
                     
                     ?>
+                    <?php $count = 1; ?>
                     <?php while($row = mysqli_fetch_assoc($order_result)){ ?>
                         <div class="payment">
                         
-                        <p class="payment_date"><?=substr($row['order_datetime'], 0, 10)?></p>
-                        <div class="paymentBox">
-                            <p style="font-weight: 600;">수령완료   <span style="color: #9FBB73;"><?=$row['receive_datetime']?> 도착</span></p>
-                            <p>음식 주문 시간 : <?=$row['order_datetime']?></p>
-                            <p>가격 : <?=$row['price']?>원</p>
-                            <p>결제수단 : <?=$row['payment_method']?></p>
-                            <p>주문하신 메뉴 :</p>
-                            <div class="food_menu">
+                            <p class="payment_date"><?=substr($row['order_datetime'], 0, 10)?></p>
+                            <div class="paymentBox">
+                                <p style="font-weight: 600;">수령완료   <span style="color: #9FBB73;"><?=$row['receive_datetime']?> 도착</span></p>
+                                <p>음식 주문 시간 : <?=$row['order_datetime']?></p>
+                                <p>가격 : <?=$row['price']?>원</p>
+                                <p>결제수단 : <?=$row['payment_method']?></p>
+                                <p>주문하신 메뉴 :</p>
+                                <div class="food_menu">
+                                    <?php
+                                    $meal_id = $row['meal_id'];
+                                    $meal_sql = "select * from meal where meal_id = $meal_id";
+                                    $meal_result = mysqli_query($db, $meal_sql);
+                                    $row = mysqli_fetch_assoc($meal_result);
+                                    $meal_menu = str_replace(',', ', ', $row['meal_menu']);
+                                    $restaurant_id = $row['restaurant_id'];
+                                    ?>
+                                    <?= $meal_menu ?>
+                                </div>
+
+                                <!-- 리뷰가 없다면 리뷰쓰기, 리뷰가 있다면 리뷰 보기 보여주기! -->
+                                <!-- 리뷰쓰기를 클릭하면 리뷰작성 폼이 나오고, 리뷰보기 버튼을 클릭하면 리뷰를 볼 수 있고 수정, 삭제 버튼이 포함된 폼이 나옴 이것은 프론트에서 구현함 -->
+                                <!-- 그러나 현재 데이터가 없어서 확인을 할 수 없음!  -->
+
                                 <?php
-                                $meal_id = $row['meal_id'];
-                                $meal_sql = "select meal_menu from meal where meal_id = $meal_id";
-                                $meal_result = mysqli_query($db, $meal_sql);
-                                $row = mysqli_fetch_assoc($meal_result);
-                                $meal_menu = str_replace(',', ', ', $row['meal_menu']);
+                                $sql = "select * from review where meal_id = $meal_id and user_id = $user_id";
+                                $result = mysqli_query($db, $sql);
+                                $row = mysqli_fetch_assoc($result);
+                                //echo print_r($row);
                                 ?>
-                                <?= $meal_menu ?>
+
+                                <?php if($row){ ?>
+                                        <button class="reveiw_btn" onclick="showReviewForm(<?=$count?>)">리뷰보기</button>
+                                        <div class="view_review" action=""  id="reviewForm(<?=$count?>)">
+                                        <div class="review">
+                                <div class="user">
+                                    
+                                    <div class="user_info">
+                                        <p>작성자: <?=$row['user_id']?></p>
+                                        <!-- 별점 float -> 별점이미지로 변환해 나타내도록 처리 -->
+                                        <p>별점: <?=$row['ratings']?></p>
+                                        <p>작성일시: <?=$row['created_dt']?></p>
+                                    </div>
+                                </div>
+                                <div class="food_urls">
+                                    <div class="food_imgBox">
+                                        <img class="food_imgUrl" src=<?=$row['image_url']?> alt="">
+                                    </div>
+                                </div>
+                                <div class="content"><?=$row['content']?></div>
                             </div>
-                            <button class="reveiw_btn">리뷰쓰기</button>
-                        </div>
+                                    
+                                    <div class="flex">
+                                    <form method="post" action="./review_modify.php">
+                                        <button onclick="writeReviewForm()" style="margin-right: 10px;">수정하기</button>
+                                        
+                                    </form>
+
+                                    <form method="post" action="./review_delete.php">
+                                        <input name="review_id" type="hidden" value=<?=$row['review_id']?>>
+                                        <button>삭제하기</button>
+                                    </form>
+                                        
+                                        
+                                    </div>
+                                
+                                </div>
+
+                                <?php }else{ ?>
+                                    <button class="reveiw_btn" onclick="writeReviewForm()">리뷰쓰기</button>
+                                <form class="reviewForm" action="review_write.php" id="writeForm" method="post">
+                                    <div class="flex">
+                                        <p>별점 : &nbsp;</p>
+                                        <input name="ratings" type="text">
+                                    </div>
+                                    <div class="flex">
+                                        <p>후기 : &nbsp;</p>
+                                        <textarea name="content" class="textarea"></textarea>
+                                    </div>
+                                    <div class="flex">
+                                        <p>이미지 주소 : &nbsp;</p>
+                                        <textarea name="image_url" type="text"></textarea>
+                                    </div>
+
+                                    <input name="restaurant_id" type="hidden" value=<?=$restaurant_id?>>
+                                    <input name="meal_id" type="hidden" value=<?=$meal_id?>>
+                                    
+
+                                    <input class="submit" type="submit" value="리뷰 작성"/>
+                                </form>
+
+                                <?php } ?>
+                                <?php $count++; ?>
+
+                                
+    
+                                
+                            </div>
                         </div>
 
                     <?php } ?>
-                    
+                </div>
                    
             </div>
             <!-- 좋아요 목록 -->
@@ -317,12 +468,19 @@ include('db.php'); ?>
                 <h1 class="main_title" style="margin-bottom: 35px;">찜한메뉴</h1>
                 <div class="menu_list">
                     <?php
-                    $meal_sql = "select * from `meal` where `meal_id`= (select `meal_id` from `order` where `user_id` = $user_id)";
-                    $meal_result = mysqli_query($db, $meal_sql);
+                    $liked_meal_sql = "select * from `liked_meals` where `user_id` = $user_id";
+                    $liked_meal_result = mysqli_query($db, $liked_meal_sql);
                     ?>
 
-                    <?php while($row = mysqli_fetch_assoc($meal_result)){ ?>
-                        <div class="food_menu">
+                    <?php while($meal_row = mysqli_fetch_assoc($liked_meal_result)){ ?>
+                        <?php
+                        
+                            $meal_id = $meal_row['meal_id'];
+                            $meal_sql = "select * from `meal` where `meal_id` = $meal_id";
+                            $meal_result = mysqli_query($db, $meal_sql);
+                            $row = mysqli_fetch_assoc($meal_result);
+                        ?>
+                        <div class="liked_list">
                             <?php
                             $restaurant_id = $row['restaurant_id'];
                             $resname_sql = "select `restaurant_name` from `restaurant` where `restaurant_id`=$restaurant_id";
@@ -330,10 +488,11 @@ include('db.php'); ?>
                             $restaurant_name = mysqli_fetch_assoc($resname_result)['restaurant_name'];
                             $meal_menu = str_replace(',', ', ', $row['meal_menu']);
                             ?>
-                        <p><?=$restaurant_name?></p>
-                        <p><?=$row['date']?></p>
-                        <p><?=$row['serving_time']?></p>
-                        <p><?=$meal_menu?></p>
+                            <button class="heartButton" onclick="toggleHeart(this)">&#10084;</button>
+                            <p><?=$restaurant_name?></p>
+                            <p><?=$row['date']?></p>
+                            <p><?=$row['serving_time']?></p>
+                            <p><?=$meal_menu?></p>
                         </div>
                     <?php } ?> 
                 </div>
@@ -367,3 +526,17 @@ include('db.php'); ?>
     </section>
 </body>
 </html>
+
+<script>
+    function writeReviewForm() {
+      var reviewForm = document.getElementById('writeForm' + count);
+      reviewForm.style.display = 'block';
+    }
+    function showReviewForm(count) {
+      var reviewForm = document.getElementById('reviewForm' + count);
+      reviewForm.style.display = 'block';
+    }
+    function toggleHeart(button) {
+      button.classList.toggle('active'); // active 클래스를 토글
+    }
+  </script>

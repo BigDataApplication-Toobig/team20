@@ -223,59 +223,37 @@ $result = mysqli_query($db, $sql);
         </div>
         <p></p>
     </header>
-
-    <section>  
-        <div class="main_inner">
-            <div>
-            <form method="post" action="./search_result_time.php">
-                <?php if(isset($_GET['time_error'])) { ?>
-                    <p class="error"><?php echo $_GET['time_error']; ?></p>
-                <?php } ?>
-                <input class="input_time" name="input_date" type="date"> &nbsp; 일 &nbsp;
-                <input class="input_time" name="input_time" type="time"> &nbsp; 시에 &nbsp; 
-                <input class="btn" type="submit" value="주문 가능한 음식 확인하기">
-            </form>
-            </div>   
-            <div>
-            <form method="post" action="./search_result_food.php">
-                <?php if(isset($_GET['text_error'])) { ?>
-                    <p class="error"><?php echo $_GET['text_error']; ?></p>
-                <?php } ?>
-                <input class="input_txt" name="input_text" type="text" placeholder="식당, 메뉴 검색하기">
-                <button class="btn">검색</button>
-            </form>
-            </div>
-            
-        </div>
-    </section>
+    <?php
+    
+    // 2-4 SUM, AVG, etc and GROUP BY -> 회원별 총 주문금액
+    $sql = "select `user_id`, sum(`price`) as `sum` from `order` group by `user_id`;";
+    
+    // 2-5-1 providing aggregates (sum, average, max, min, etc.) based on complex groupings (group on several columns) -> 식당별 평균 금액
+    $sql = "SELECT r.restaurant_id, r.restaurant_name, AVG(m.price) AS avg_menu_price FROM MEAL m JOIN RESTAURANT r ON m.restaurant_id = r.restaurant_id GROUP BY r.restaurant_id, r.restaurant_name;";
     
 
-    
+    // 2-5-2 rollup, drill down on OLAP data -> 식당 메뉴별 식당별 매출
+    $sql = "SELECT restaurant_id, meal_id, SUM(price) AS total_sales FROM `ORDER` GROUP BY restaurant_id, meal_id WITH ROLLUP;";
 
-
-    <main class="main">
-    <?php foreach($result as $row){ ?>
-        <div>
-            
-            <p class="restaurant_name"><?= $row['restaurant_name']?></p>
-            <a href="restaurant_detail.php?restaurant_id=<?= $row['restaurant_id']?>">
-            <div class="restaurant">
-                <div class="imgBox">
-                <?php 
-                $restaurant_id = $row['restaurant_id'];
-                $img_sql = "select * from restaurant_images where restaurant_id = $restaurant_id limit 1";
-                $img_result = mysqli_query($db, $img_sql);
-                $img_row = mysqli_fetch_assoc($img_result);
-                ?>
-                <img class="img" src="<?=$img_row['image_url']?>" alt="">
-                </div>
-            </div>
-            </a>
-        </div>
-    <?php } ?>
+    // 2-5-3 ranking, or windowing -> 식당별 평균별점 랭킹
+    $sql = "SELECT restaurant_id, AVG(ratings) AS avg_ratings, COUNT(*) AS review_count, DENSE_RANK() OVER (ORDER BY AVG(ratings) DESC) AS rating_rank FROM review GROUP BY restaurant_id;";
     
-     
-    </main>
+    ?>
+
+<main style="display: flex; margin-top: 20px;">
+    <div class="section" style="flex: 1; display: flex; justify-content: center; align-items: center;">
+        섹션 1
+    </div>
+    <div class="section" style="flex: 1; display: flex; justify-content: center; align-items: center;">
+        섹션 2
+    </div>
+    <div class="section" style="flex: 1; display: flex; justify-content: center; align-items: center;">
+        섹션 3
+    </div>
+    <div class="section" style="flex: 1; display: flex; justify-content: center; align-items: center;">
+        섹션 4
+    </div>
+</main>
 
     <!-- FOOTER -->
     <section class="footer">
@@ -307,3 +285,4 @@ $result = mysqli_query($db, $sql);
   
 </body>
 </html>
+
