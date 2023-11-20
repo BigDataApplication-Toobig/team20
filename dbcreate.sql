@@ -1,4 +1,5 @@
-﻿-- root 계정으로 로그인(mysql -u root -p)한 뒤, 해당 파일 실행(source dbcreate.sql)
+﻿-- dbcreate.sql: 데이터베이스 테이블과 기본/외래키, 테이블 관계, 인덱스 생성
+-- root 계정으로 로그인(mysql -u root -p)한 뒤, 해당 파일 실행(source dbcreate.sql)
 
 use team20;
 

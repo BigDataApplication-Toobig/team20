@@ -1,4 +1,5 @@
--- 작성자: 김원우
+-- dbinsert.sql: 데이터베이스 테이블에 데이터 삽입
+
 -- 1. restaurant
 INSERT INTO team20.restaurant (restaurant_id,restaurant_name,call_number,location,introduction,available_time) VALUES
 	 (1,'I-House 학생식당','02-313-7071','대학원 기숙사 A/B동 I-House C동 B1층','I-House 학생식당은 생활환경관 및 SK텔레콤관 근처에 위치하고 있어 국제교육관, 신세계관, 생활환경관, 학생문화관 그리고 ECC 등에서 이용하기 편리합니다. 물론 아이하우스에 거주하는 외국인학생들과 대학원생들도 이용 가능합니다.

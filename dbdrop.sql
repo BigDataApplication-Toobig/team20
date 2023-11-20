@@ -1,4 +1,5 @@
--- database 내의 모든 table drop
+-- dbdrop.sql: database 내의 모든 table drop
+
 use team20;
 drop index idx_restaurant_id on restaurant;
 SET @tables = NULL;

@@ -1,3 +1,5 @@
+<!-- review_write.php: 리뷰 작성 폼 처리 -->
+
 <?php
 include('db.php');
 $user_id = $_SESSION['user_id'];
@@ -14,7 +16,7 @@ $sql = "INSERT INTO `review`(`restaurant_id`, `user_id`, `meal_id`, `ratings`, `
 $result = mysqli_query($db, $sql);
 
 header("location: mypage.php");
-// 수정 필요 리뷰작성완료메세지 작성해야함
+
 exit();
 
 ?>

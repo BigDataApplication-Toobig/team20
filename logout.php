@@ -1,3 +1,4 @@
+<!-- logout.php: 로그아웃 화면(세션 삭제) -->
 <?php
 
 session_start();
