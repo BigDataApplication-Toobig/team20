@@ -18,4 +18,6 @@ if($insert1 && $insert2) {
 // 사용방법 따라서 php 닫는부분 뺄수도 있음
 $mysqli->close();
 
+
 ?>
+
