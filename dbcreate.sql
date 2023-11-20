@@ -233,6 +233,6 @@ create index idx_restaurant_id on restaurant (restaurant_id);
 
 -- auto_increment 설정
 ALTER TABLE liked_meals MODIFY likedMeals_id INT NOT NULL AUTO_INCREMENT;
-ALTER TABLE order MODIFY order_id INT NOT NULL AUTO_INCREMENT;
+ALTER TABLE `order` MODIFY `order_id` INT NOT NULL AUTO_INCREMENT;
 ALTER TABLE review MODIFY review_id INT NOT NULL AUTO_INCREMENT;
 
