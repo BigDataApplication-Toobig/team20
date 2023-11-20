@@ -311,6 +311,8 @@ $result = mysqli_query($db, $sql);
 
                     //<!-- Project results -->
                     //<!-- (4) Some SELECT queries should include SUM, AVG, etc (aggregation operations) and also GROUP BY statements -->
+                    
+                    // 회원별 총 주문금액
                     $sql = "SELECT `user_id`, SUM(`price`) AS `sum` FROM `order` GROUP BY `user_id`;";
                     $result = mysqli_query($db, $sql);
 
@@ -342,6 +344,8 @@ $result = mysqli_query($db, $sql);
 
                     //<!-- Project results -->
                     //<!-- (5-1) providing aggregates (sum, average, max, min, etc.) based on complex groupings (group on several columns) -->
+
+                    // 식당 시간대별 평균 금액
                     $sql = "SELECT r.restaurant_name, m.serving_time, AVG(m.price) AS avg_menu_price 
         FROM MEAL m 
         JOIN RESTAURANT r ON m.restaurant_id = r.restaurant_id 
@@ -379,6 +383,7 @@ $result = mysqli_query($db, $sql);
                     //<!-- Project results -->
                     //<!-- (5-2) rollup, drill down on OLAP data -->
 
+                    // 메뉴별, 식당별 매출
                     $sql = "SELECT r.restaurant_name, o.meal_id, SUM(o.price) AS total_sales
             FROM `ORDER` o
             JOIN RESTAURANT r ON o.restaurant_id = r.restaurant_id
@@ -421,7 +426,7 @@ $result = mysqli_query($db, $sql);
         </div>
         <div class="section" style="flex: 1;">
             <section>
-                <h1>식당별 평균별점 랭킹</h1>
+                <h1>식당별 평균별점, 리뷰 수, 별점 랭킹</h1>
                 <table>
                     <tr>
                         <th>Restaurant ID</th>
@@ -434,6 +439,7 @@ $result = mysqli_query($db, $sql);
                     //<!-- Project results -->
                     //<!-- (5-3) ranking, or windowing  -->
 
+                    // 식당별 평균별점, 리뷰 수, 별점 랭킹
                     $sql = "SELECT r.restaurant_name AS restaurant_id, AVG(rev.ratings) AS avg_ratings, COUNT(*) AS review_count, DENSE_RANK() OVER (ORDER BY AVG(rev.ratings) DESC) AS rating_rank
             FROM review rev
             JOIN RESTAURANT r ON rev.restaurant_id = r.restaurant_id
