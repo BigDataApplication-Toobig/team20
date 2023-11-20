@@ -4,6 +4,7 @@
 include('db.php');
 
 if (isset($_GET['restaurant_id'])) {
+    // 식당 정보를 가져온다
     $restaurant_id = mysqli_real_escape_string($db, $_GET['restaurant_id']);
     $sql = "select * from restaurant where restaurant_id=$restaurant_id";
     $result = mysqli_query($db, $sql);
@@ -355,7 +356,6 @@ if (isset($_GET['restaurant_id'])) {
     <main class="main_container">
         <div class="main_container_inner">
             <h1 class="main_title"><?= $restaurant_name ?></h1>
-            <!-- 리뷰확인 안보임! 보이게 처리해야 함 -->
 
             <div class="main_desc">
                 <div class="desc_left">
@@ -379,8 +379,8 @@ if (isset($_GET['restaurant_id'])) {
 
                 </div>
             </div>
-            <!-- 운영 요일과 횟수 가져오기 ex)월화수목금 / 조중중석 -> 4X5
-            for 중첩-->
+            
+            <!-- 요일과 식사 시간을 기준으로 식사 표 출력 -->
             <?php
             $weekday_sql = "select DISTINCT weekday from meal where restaurant_id = $restaurant_id";
             $weekday_result = mysqli_query($db, $weekday_sql);
@@ -469,6 +469,7 @@ if (isset($_GET['restaurant_id'])) {
                     <!-- Project results -->
                     <!-- (6) User input should include various types of controls such as text box, buttons, etc. -->
 
+                    <!-- 식사 주문서 -->
                     <form class="order_form" method="post" action="./order_server.php">
                         <h1 class="order_title">주문서</h1>
                         <div>

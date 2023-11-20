@@ -239,7 +239,8 @@ if (isset($_POST['input_text'])) {
         </div>
         <p></p>
     </header>
-
+    
+    <!-- 메뉴를 포함하는 식사 검색결과 조회 -->
     <main class="result_container">
         <div class="result_inner">
             <h1 class="title">'<?= $input_text ?>' 메뉴가 포함된 검색결과는 총 <?= $count ?> 개 있습니다.</h1>

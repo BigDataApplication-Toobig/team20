@@ -404,6 +404,7 @@ include('db.php'); ?>
 
 
                     ?>
+                    <!-- 주문 내역 -->
                     <?php $count = 1; ?>
                     <?php while ($row = mysqli_fetch_assoc($order_result)) { ?>
                         <div class="payment">
@@ -427,15 +428,17 @@ include('db.php'); ?>
                                     <?= $meal_menu ?>
                                 </div>
 
-                                <!-- 리뷰가 없다면 리뷰쓰기, 리뷰가 있다면 리뷰 보기를 보여준다 -->
+                                
 
                                 <?php
                                 $sql = "select * from review where meal_id = $meal_id and user_id = $user_id";
                                 $result = mysqli_query($db, $sql);
                                 $row = mysqli_fetch_assoc($result);
-                                //echo print_r($row);
+                                
                                 ?>
 
+                                <!-- 주문 내역에 대해 리뷰가 없다면 리뷰쓰기, 리뷰가 있다면 리뷰 보기를 보여준다 -->
+                                <!-- 리뷰 보기 -->
                                 <?php if ($row) { ?>
                                     <button class="reveiw_btn" onclick="showReviewForm(<?= $count ?>)">리뷰보기</button>
                                     <div class="view_review" action="" id="reviewForm(<?= $count ?>)">
@@ -472,6 +475,7 @@ include('db.php'); ?>
 
                                     </div>
 
+                                <!-- 리뷰 쓰기 -->
                                 <?php } else { ?>
                                     <button class="reveiw_btn" onclick="writeReviewForm()">리뷰쓰기</button>
                                     <form class="reviewForm" action="review_write.php" id="writeForm" method="post">

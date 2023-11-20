@@ -264,6 +264,8 @@
 
     <!-- Project results -->
     <!-- (3-부가항목) take USER INPUT to generate DYNAMIC QUERIES -->
+
+    <!-- 회원가입 폼 -->
     <section class="signin">
         <h1>회원가입</h1>
 

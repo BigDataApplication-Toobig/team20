@@ -5,6 +5,7 @@ include('db.php');
 
 $restaurant_id = mysqli_real_escape_string($db, $_POST['restaurant_id']);
 
+// post로 넘어온 값에 따라 각자 다른 sql문 실행
 $ratings_range = $_POST['ratings_range'];
 
 if ($ratings_range == "all") {
@@ -361,10 +362,6 @@ $total_count = mysqli_num_rows($result);
                     </form>
                 </div>
             </div>
-            <!-- jsp 처리할거 아니면 submit 버튼 필요함
-            1. jsp 처리해서 form 자동전송되도록 하거나
-            2. submit 만들어서 form 전송 (이 경우 베스트/최신순 선택된 표시 나타나도록 해야 함. 또한 베스트/최신순 선택시 별점은 모든 별점보기로 자동 설정되도록 함.)
-            -->
 
             <div class="review_container">
                 <?php while ($row = mysqli_fetch_assoc($result)) { ?>

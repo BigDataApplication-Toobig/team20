@@ -241,6 +241,7 @@ if (isset($_POST['input_time']) && isset($_POST['input_date'])) {
         <p></p>
     </header>
 
+    <!-- 시간 입력시 해당 시간에 가능한 식사 조회 -->
     <main class="result_container">
         <div class="result_inner">
             <h1 class="title"><?= $input_date ?> <?= $input_time ?>에 주문가능한 메뉴는 다음과 같습니다.</h1>

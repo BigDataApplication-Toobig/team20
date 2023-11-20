@@ -1,4 +1,4 @@
-<!-- review_list.php: 리뷰 화면. 별점 및 최신순 정렬과 별점 범위 조회 폼을 포함 -->
+<!-- review_list.php: 리뷰 화면. 별점 및 최신순 정렬 폼과 별점 범위 조회 폼을 포함 -->
 
 <?php
 include('db.php');
@@ -334,6 +334,7 @@ if (isset($_GET['restaurant_id'])) {
         <div class="main_inner">
             <div class="top">
                 <div class="top_left">
+                    <!-- 별점 및 최신순 정렬 폼 -->
                     <form method="post" action="review_list_orderby.php">
                         <input type="radio" name="orderby" value="별점 높은순">별점 높은순
                         <input type="radio" name="orderby" value="별점 낮은순">별점 낮은순
@@ -343,6 +344,7 @@ if (isset($_GET['restaurant_id'])) {
                     </form>
                 </div>
                 <div>
+                    <!-- 별점 범위 조회 폼 -->
                     <form method="post" action="review_list_ratings.php">
                         <!-- 
                         <select name="ratings_range" class="selection">
@@ -366,11 +368,8 @@ if (isset($_GET['restaurant_id'])) {
                     </form>
                 </div>
             </div>
-            <!-- jsp 처리할거 아니면 submit 버튼 필요함
-            1. jsp 처리해서 form 자동전송되도록 하거나
-            2. submit 만들어서 form 전송 (이 경우 베스트/최신순 선택된 표시 나타나도록 해야 함. 또한 베스트/최신순 선택시 별점은 모든 별점보기로 자동 설정되도록 함.)
-            -->
-
+            
+            <!-- 리뷰 출력 -->
             <div class="review_container">
                 <?php while ($row = mysqli_fetch_assoc($result)) { ?>
                     <div class="review">

@@ -1,3 +1,5 @@
+<!-- main.php: 메인 페이지. 각 식당 화면, 식사 가능 시간 폼, 메뉴 검색 폼, 상세분석 바로가기 제공 -->
+
 <?php
 include('db.php');
 
@@ -274,6 +276,7 @@ $result = mysqli_query($db, $sql);
     <section>
         <div class="main_inner">
             <div>
+                <!-- 식사 가능 시간 폼 -->
                 <form method="post" action="./search_result_time.php">
                     <?php if (isset($_GET['time_error'])) { ?>
                         <p class="error"><?php echo $_GET['time_error']; ?></p>
@@ -284,6 +287,7 @@ $result = mysqli_query($db, $sql);
                 </form>
             </div>
             <div>
+                <!-- 메뉴 검색 폼 -->
                 <form method="post" action="./search_result_food.php">
                     <?php if (isset($_GET['text_error'])) { ?>
                         <p class="error"><?php echo $_GET['text_error']; ?></p>
@@ -301,6 +305,7 @@ $result = mysqli_query($db, $sql);
 
 
     <main class="main">
+        <!-- 각 식당에 대한 이미지 박스 바로가기 -->
         <?php foreach ($result as $row) { ?>
             <div>
 
@@ -310,6 +315,7 @@ $result = mysqli_query($db, $sql);
                         <div class="imgBox">
                             <?php
                             $restaurant_id = $row['restaurant_id'];
+                            // 식당 이미지를 가져온다
                             $img_sql = "select * from restaurant_images where restaurant_id = $restaurant_id limit 1";
                             $img_result = mysqli_query($db, $img_sql);
                             $img_row = mysqli_fetch_assoc($img_result);

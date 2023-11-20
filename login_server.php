@@ -14,6 +14,7 @@ if (isset($_POST['user_id']) && isset($_POST['password'])) {
         header("location: login_view.php?error=비밀번호가 비어있어요");
         exit();
     } else {
+        // 쿼리로 유저 id에 해당하는 데이터를 가져와 입력 비밀번호가 이와 일치하는지 비교
         $sql = "select * from user where user_id = '$user_id'";
         $result = mysqli_query($db, $sql);
 
@@ -207,16 +208,7 @@ if (isset($_POST['user_id']) && isset($_POST['password'])) {
 
 
     <section class="signin">
-        <!-- <h1>회원가입</h1>
-        <div class="signin__card">
-            <h2><strong>Welcome!&nbsp;&nbsp;</strong>EwhaFOOD에 오신 것을 환영합니다.</h2>
-            <form method="post" action="./signup_action.php">
-                <h3>ID</h3><input type="text" name="id" placeholder="아이디를 입력하세요">
-                <h3>PASSWORD</h3><input name="password" type="password" placeholder="비밀번호를 입력하세요">
-                <h3>이메일</h3><input type="text" name="email" placeholder="이메일을 입력하세요" class="last">
-                <div><input class="submit" type="submit" value="Login" /></div>
-            </form>
-        </div> -->
+        
 
 
     </section>
