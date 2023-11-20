@@ -440,7 +440,7 @@ include('db.php'); ?>
                                 <!-- 주문 내역에 대해 리뷰가 없다면 리뷰쓰기, 리뷰가 있다면 리뷰 보기를 보여준다 -->
                                 <!-- 리뷰 보기 -->
                                 <?php if ($row) { ?>
-                                    <button class="reveiw_btn" onclick="showReviewForm(<?= $count ?>)">리뷰보기</button>
+                                    <button class="reveiw_btn" onclick="showReviewForm(this)">리뷰보기</button>
                                     <div class="view_review" action="" id="reviewForm(<?= $count ?>)">
                                         <div class="review">
                                             <div class="user">
@@ -460,10 +460,32 @@ include('db.php'); ?>
                                         </div>
 
                                         <div class="flex">
-                                            <form method="post" action="./review_modify.php">
-                                                <button onclick="writeReviewForm()" style="margin-right: 10px;">수정하기</button>
+                                            <!-- <form method="post" action="./review_modify.php"> -->
+                                            <button onclick="writeReviewForm(this)" style="margin-right: 10px;">수정하기</button>
+                                            <form class="reviewForm" action="review_modify.php" id="writeForm" method="post" style="display: none;">
+                                                <div class="flex">
+                                                    <p>별점 : &nbsp;</p>
+                                                    <input name="ratings" type="text">
+                                                </div>
+                                                <div class="flex">
+                                                    <p>후기 : &nbsp;</p>
+                                                    <textarea name="content" class="textarea"></textarea>
+                                                </div>
+                                                <div class="flex">
+                                                    <p>이미지 주소 : &nbsp;</p>
+                                                    <textarea name="image_url" type="text"></textarea>
+                                                </div>
+                                                
 
+                                                <input name="restaurant_id" type="hidden" value=<?= $restaurant_id ?>>
+                                                <input name="meal_id" type="hidden" value=<?= $meal_id ?>>
+                                                <input name="review_id" type="hidden" value=<?= $row['review_id'] ?>>
+
+
+                                                <input class="submit" type="submit" value="리뷰 수정" />
                                             </form>
+
+                                            <!-- </form> -->
 
                                             <form method="post" action="./review_delete.php">
                                                 <input name="review_id" type="hidden" value=<?= $row['review_id'] ?>>
@@ -477,8 +499,8 @@ include('db.php'); ?>
 
                                 <!-- 리뷰 쓰기 -->
                                 <?php } else { ?>
-                                    <button class="reveiw_btn" onclick="writeReviewForm()">리뷰쓰기</button>
-                                    <form class="reviewForm" action="review_write.php" id="writeForm" method="post">
+                                    <button class="reveiw_btn" onclick="writeReviewForm(this)">리뷰쓰기</button>
+                                    <form class="reviewForm" action="review_write.php" id="writeForm" method="post" style="display: none;">
                                         <div class="flex">
                                             <p>별점 : &nbsp;</p>
                                             <input name="ratings" type="text">
@@ -578,13 +600,18 @@ include('db.php'); ?>
 </html>
 
 <script>
-    function writeReviewForm() {
-        var reviewForm = document.getElementById('writeForm' + count);
-        reviewForm.style.display = 'block';
+function writeReviewForm(button) {
+    var reviewForm = button.nextElementSibling; // 버튼 다음에 있는 요소를 가져옵니다.
+    if (reviewForm.style.display === 'block') {
+        reviewForm.style.display = 'none'; // 이미 보이는 경우에는 숨깁니다.
+    } else {
+        reviewForm.style.display = 'block'; // 그렇지 않으면 보이도록 설정합니다.
     }
+}
 
-    function showReviewForm(count) {
-        var reviewForm = document.getElementById('reviewForm' + count);
+
+    function showReviewForm(button) {
+        var reviewForm = document.getElementById('reviewForm');
         reviewForm.style.display = 'block';
     }
 
